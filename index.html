@@ -53,6 +53,7 @@
   .lead{margin:0;display:flex;flex-direction:column;gap:2px}
   .lead b{font-weight:500;font-size:clamp(20px,2.2vw,26px);letter-spacing:.01em;color:var(--cream)}
   .lead i{font-style:italic;font-size:clamp(18px,1.9vw,23px);color:var(--gold)}
+  .promise{margin:0;font-size:clamp(20px,2vw,24px);line-height:1.4;color:var(--gold);font-style:italic;padding-left:14px;border-left:1px solid rgba(236,211,163,.45)}
   .about{margin:0;max-width:29em;font-size:clamp(17px,1.55vw,20px);line-height:1.5;color:var(--mute)}
 
   .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:4px}
@@ -66,21 +67,35 @@
   .link:hover{border-bottom-color:var(--gold)}
   a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 
+  /* Стрелка «читать дальше» внизу первого экрана */
+  .more{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:1;
+    color:var(--gold);opacity:.6;text-decoration:none;font:300 22px/1 var(--sans);padding:8px 12px}
+  .more:hover{opacity:1}
+
+  /* Текст о калейдоскопе — как стихотворение, по строфам */
+  .manifest{position:relative;padding:clamp(72px,12vh,140px) 20px clamp(64px,10vh,120px);display:flex;flex-direction:column;align-items:center;gap:clamp(40px,6vh,64px);
+    background:radial-gradient(ellipse 60% 45% at 50% 38%,rgba(217,181,122,.10),rgba(217,181,122,0) 70%),var(--night)}
+  .story{margin:0;max-width:34em;text-align:center;font-size:clamp(21px,2.2vw,26px);line-height:1.6;color:var(--cream);text-wrap:pretty}
+
   footer{position:relative;background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
   footer .inner{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));gap:4px}
   footer p{margin:0;max-width:62em}
 
   @media (max-width:600px){
     /* на телефоне кнопка — сразу под фразой, чтобы её было видно без прокрутки; абзац — ниже */
-    .actions{order:3}.about{order:4;font-size:16.5px}.inner{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))}
+    .actions{order:3}.inner{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))}
     .logo{width:min(84vw,360px)}
     .inner{align-items:center;text-align:center}
     .lead{align-items:center}
+    .promise{border-left:0;padding-left:0}
     .actions{justify-content:center;flex-direction:column;gap:16px;width:100%}
+    .more{display:none}
     .btn{width:100%;max-width:340px;justify-content:center}
     footer .inner{align-items:flex-start;text-align:left}
   }
-  @media (prefers-reduced-motion:reduce){ .btn,.btn span[aria-hidden]{transition:none} }
+  .manifest .btn{max-width:340px}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .btn,.btn span[aria-hidden]{transition:none} }
 </style>
 </head>
 <body>
@@ -89,15 +104,20 @@
   <div class="inner">
     <h1><img class="logo" src="assets/logo-gold.png" width="2454" height="545" alt="13 MIRRORS — Калейдоскоп твоих миров"></h1>
     <p class="lead"><b>Авторские психологические маршруты.</b><i>Created with you. For you.</i></p>
-    <p class="about">13 MIRRORS — пространство внимания к себе. Каждые 13 дней начинается новый маршрут: день за днём мы смотрим на жизнь через одну грань и замечаем, что в ней уже звучит. Можно просто наблюдать, можно пройти путь вместе с группой или погрузиться глубже.</p>
+    <p class="promise">13 MIRRORS не создаёт твоих миров.<br>Он помогает их открыть.</p>
     <div class="actions">
       <!-- Надпись на кнопке сама берётся из витрины: «Расписание октября», «Расписание ноября»… -->
-      <a class="btn" id="schedule" href="/vitrina/"><span id="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
+      <a class="btn" id="schedule" href="/vitrina/"><span class="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
       <!-- Telegram: вписать адрес, когда будет известен -->
       <a class="link" id="tg" href="#" target="_blank" rel="noopener" hidden>Telegram</a>
     </div>
   </div>
+  <a class="more" href="#manifest" aria-label="Читать дальше">↓</a>
 </main>
+<section class="manifest" id="manifest" aria-label="О 13 MIRRORS">
+  <p class="story">Помнишь калейдоскоп? С каждым поворотом в нём рождается новый узор, но сам он ничего не создаёт&nbsp;— лишь меняет угол зрения. Переступая этот порог, ты не найдёшь готовых ответов&nbsp;— здесь всегда есть вопрос. Здесь открываются твои миры и продолжается Путь к&nbsp;Себе.</p>
+  <a class="btn" href="/vitrina/"><span class="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
+</section>
 <footer>
   <div class="inner">
     <p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
@@ -110,7 +130,7 @@
   var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
     var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
-    if (m) document.getElementById('schedule-text').textContent = 'Расписание ' + GEN[+m[2] - 1];
+    if (m) document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = 'Расписание ' + GEN[+m[2] - 1]; });
   }).catch(function () {});
 })();
 </script>
