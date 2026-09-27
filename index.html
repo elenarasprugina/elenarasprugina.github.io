@@ -35,12 +35,12 @@
   /* Картинка с дверью: на широком экране — на весь экран, текст слева на тёмном;
      на телефоне — вертикальная дверь сверху, мягко уходит в темноту, текст ниже на тёмном фоне */
   .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;background:var(--night);overflow:hidden}
-  .bg{position:absolute;inset:0;background:url(assets/door-wide.webp) 62% 50%/cover no-repeat}
+  .bg{position:absolute;inset:0;background:var(--img-wide,url(assets/door-wide.webp)) 62% 50%/cover no-repeat}
   .bg::after{content:"";position:absolute;inset:0;
     background:linear-gradient(90deg,rgba(9,7,4,.86) 0%,rgba(9,7,4,.55) 38%,rgba(9,7,4,.08) 66%,rgba(9,7,4,0) 80%),
                linear-gradient(0deg,rgba(9,7,4,.6) 0%,rgba(9,7,4,0) 32%)}
   @media (max-aspect-ratio:4/5){
-    .bg{bottom:auto;height:60svh;background-image:url(assets/door-tall.webp);background-position:58% 22%}
+    .bg{bottom:auto;height:60svh;background-image:var(--img-tall,url(assets/door-tall.webp));background-position:58% 22%}
     .bg::after{background:linear-gradient(180deg,rgba(9,7,4,0) 0%,rgba(9,7,4,0) 52%,rgba(9,7,4,.75) 80%,var(--night) 100%)}
     .hero{padding-top:44svh}
   }
@@ -48,7 +48,9 @@
   .inner{position:relative;width:100%;max-width:1320px;margin:0 auto;
     padding:40px clamp(20px,6vw,88px) calc(clamp(40px,9vh,96px) + env(safe-area-inset-bottom,0px));
     display:flex;flex-direction:column;align-items:flex-start;gap:clamp(18px,2.6vh,26px)}
-  .logo{display:block;width:clamp(250px,38vw,540px);height:auto}
+  /* Логотип — картинка-трафарет: окрашивается в акцентный цвет (по умолчанию золотистый) */
+  .logo{display:block;width:clamp(250px,38vw,540px);aspect-ratio:2454/545;background:var(--gold);
+    -webkit-mask:url(assets/logo-gold.png) center/contain no-repeat;mask:url(assets/logo-gold.png) center/contain no-repeat}
   h1{margin:0}
   .lead{margin:0;display:flex;flex-direction:column;gap:2px}
   .lead b{font-weight:500;font-size:clamp(20px,2.2vw,26px);letter-spacing:.01em;color:var(--cream)}
@@ -58,9 +60,9 @@
 
   .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:4px}
   .btn{display:inline-flex;align-items:center;gap:12px;padding:15px 26px;border-radius:999px;text-decoration:none;
-    background:var(--gold);color:#1c150c;font:500 15px/1.2 var(--sans);letter-spacing:.06em;
+    background:var(--gold);color:var(--btn-ink,#1c150c);font:500 15px/1.2 var(--sans);letter-spacing:.06em;
     box-shadow:0 0 0 1px rgba(236,211,163,.35),0 10px 34px rgba(217,181,122,.28);transition:transform .18s ease,box-shadow .18s ease,background .18s}
-  .btn:hover{transform:translateY(-1px);background:#f3dfb6;box-shadow:0 0 0 1px rgba(236,211,163,.5),0 14px 40px rgba(217,181,122,.38)}
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 0 0 1px rgba(236,211,163,.5),0 14px 40px rgba(217,181,122,.38)}
   .btn span[aria-hidden]{font-size:18px;line-height:1;transition:transform .18s}
   .btn:hover span[aria-hidden]{transform:translateX(3px)}
   .link{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
@@ -75,11 +77,16 @@
   /* Текст о калейдоскопе — как стихотворение, по строфам */
   .manifest{position:relative;padding:clamp(72px,12vh,140px) 20px clamp(64px,10vh,120px);display:flex;flex-direction:column;align-items:center;gap:clamp(40px,6vh,64px);
     background:radial-gradient(ellipse 60% 45% at 50% 38%,rgba(217,181,122,.10),rgba(217,181,122,0) 70%),var(--night)}
-  .story{margin:0;max-width:34em;text-align:center;font-size:clamp(21px,2.2vw,26px);line-height:1.6;color:var(--cream);text-wrap:pretty}
+  .story{max-width:34em;text-align:center;display:flex;flex-direction:column;gap:.9em;font-size:clamp(21px,2.2vw,26px);line-height:1.6;color:var(--cream)}
+  .story p{margin:0;text-wrap:pretty}
+  /* Пока подгружаются тексты из панели — плавно проявляем, чтобы не мигали старые */
+  html.js .t{opacity:0;transition:opacity .5s ease}
+  html.js.ready .t{opacity:1}
 
   footer{position:relative;background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
   footer .inner{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));gap:4px}
   footer p{margin:0;max-width:62em}
+  #foot{display:flex;flex-direction:column;gap:4px}
 
   @media (max-width:600px){
     /* на телефоне кнопка — сразу под фразой, чтобы её было видно без прокрутки; абзац — ниже */
@@ -94,7 +101,7 @@
     footer .inner{align-items:flex-start;text-align:left}
   }
   .end{display:flex;flex-direction:column;align-items:center;gap:22px}
-  .mark{width:52px;height:52px;opacity:.9}
+  .mark{display:block;width:52px;height:52px;opacity:.9;background:var(--gold);-webkit-mask:url(assets/dandelion-gold.png) center/contain no-repeat;mask:url(assets/dandelion-gold.png) center/contain no-repeat}
   button.link{background:none;border:0;border-bottom:1px solid rgba(236,211,163,.4);border-radius:0;cursor:pointer;font:400 16px/1.2 var(--sans);letter-spacing:.04em;color:var(--gold);padding:0 0 4px}
   button.link:hover{border-bottom-color:var(--gold)}
   button:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
@@ -112,24 +119,27 @@
 </style>
 </head>
 <body>
+<script>document.documentElement.className += ' js'; setTimeout(function () { document.documentElement.classList.add('ready'); }, 1500);</script>
 <main class="hero">
   <div class="bg" aria-hidden="true"></div>
   <div class="inner">
-    <h1><img class="logo" src="assets/logo-gold.png" width="2454" height="545" alt="13 MIRRORS — Калейдоскоп твоих миров"></h1>
-    <p class="lead"><b>Авторские психологические маршруты.</b><i>Created with you. For you.</i></p>
-    <p class="promise">13 MIRRORS не создаёт твоих миров.<br>Он помогает их открыть.</p>
+    <h1><span class="logo" role="img" aria-label="13 MIRRORS — Калейдоскоп твоих миров"></span></h1>
+    <p class="lead t"><b id="lead1">Авторские психологические маршруты.</b><i id="lead2">Created with you. For you.</i></p>
+    <p class="promise t" id="promise">13 MIRRORS не создаёт твоих миров.<br>Он помогает их открыть.</p>
     <div class="actions">
       <!-- Надпись на кнопке сама берётся из витрины: «Расписание октября», «Расписание ноября»… -->
-      <a class="btn" id="schedule" href="/vitrina/"><span class="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
+      <a class="btn" id="schedule" href="/vitrina/"><span class="schedule-text t">Расписание месяца</span><span aria-hidden="true">→</span></a>
     </div>
   </div>
   <a class="more" href="#manifest" aria-label="Читать дальше">↓</a>
 </main>
 <section class="manifest" id="manifest" aria-label="О 13 MIRRORS">
-  <p class="story">Помнишь калейдоскоп? С каждым поворотом в нём рождается новый узор, но сам он ничего не создаёт&nbsp;— лишь меняет угол зрения. Переступая этот порог, ты не найдёшь готовых ответов&nbsp;— здесь всегда есть вопрос. Здесь открываются твои миры и продолжается Путь к&nbsp;Себе.</p>
-  <div class="end">
-    <img class="mark" src="assets/dandelion-gold.png" width="768" height="768" alt="">
-    <button type="button" class="link" id="ask">Задать вопрос →</button>
+  <div class="story t" id="story">
+    <p>Помнишь калейдоскоп? С каждым поворотом в нём рождается новый узор, но сам он ничего не создаёт&nbsp;— лишь меняет угол зрения.</p>
+    <p>Переступая этот порог, ты не найдёшь готовых ответов, но здесь всегда есть вопрос. Здесь открываются твои миры и продолжается Путь к&nbsp;Себе.</p>
+  </div>  <div class="end">
+    <span class="mark" aria-hidden="true"></span>
+    <button type="button" class="link t" id="ask">Задать вопрос →</button>
   </div>
 </section>
 <!-- Окошко «Задать вопрос»: способы связи берутся из панели витрины (Настройки → Контакты по умолчанию) -->
@@ -143,20 +153,79 @@
 </div>
 <footer>
   <div class="inner">
-    <p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
-    <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p>
+    <div class="t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+    <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
   </div>
 </footer>
 <script>
 // Какой месяц сейчас открывается по адресу /vitrina/ — из настроек витрины.
 (function () {
   var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-  var contacts = {};
+  var contacts = {}, scheduleWord = 'Расписание', monthGen = '';
+
+  /* ---- Главная страница из панели (Настройки витрины → home) ----
+     Всё необязательно: пустое поле — остаётся то, что написано в этой странице. */
+  var FONTS = {
+    'Cormorant Garamond': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Lora': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Playfair Display': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Philosopher': 'ital,wght@0,400;0,700;1,400;1,700'
+  };
+  function lines(el, text) {                       // текст с переносами строк → строки через <br>
+    el.textContent = '';
+    String(text).split('\n').forEach(function (ln, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(ln)); });
+  }
+  function paras(el, text) {                       // пустая строка — новый абзац
+    el.textContent = '';
+    String(text).split(/\n\s*\n/).forEach(function (par) { if (!par.trim()) return; var p = document.createElement('p'); lines(p, par.trim()); el.appendChild(p); });
+  }
+  function media(src) { return /^(https?:|data:|\/)/.test(src) ? src : '/vitrina/' + src; }
+  function ink(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); if (!m) return '#1c150c';
+    var n = parseInt(m[1], 16); return (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) > 150 ? '#1c150c' : '#fff';
+  }
+  function set(id, v, fn) { var el = document.getElementById(id); if (el && v != null && String(v).trim()) (fn || function (e, t) { e.textContent = t; })(el, String(v).trim()); }
+  function renderSchedule() {
+    document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
+  }
+  function applyHome(h) {
+    h = h || {};
+    var root = document.documentElement.style;
+    if (h.imageWide) root.setProperty('--img-wide', 'url("' + media(h.imageWide) + '")'); else root.removeProperty('--img-wide');
+    if (h.imageTall) root.setProperty('--img-tall', 'url("' + media(h.imageTall) + '")'); else root.removeProperty('--img-tall');
+    if (/^#[0-9a-f]{6}$/i.test(h.accent || '')) { root.setProperty('--gold', h.accent); root.setProperty('--btn-ink', ink(h.accent)); }
+    else { root.removeProperty('--gold'); root.removeProperty('--btn-ink'); }
+    if (h.font && FONTS[h.font]) {
+      if (!document.getElementById('home-font-' + h.font.replace(/\W/g, ''))) {
+        var l = document.createElement('link'); l.rel = 'stylesheet'; l.id = 'home-font-' + h.font.replace(/\W/g, '');
+        l.href = 'https://fonts.googleapis.com/css2?family=' + h.font.replace(/ /g, '+') + ':' + FONTS[h.font] + '&display=swap';
+        document.head.appendChild(l);
+      }
+      root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
+    } else root.removeProperty('--serif');
+    set('lead1', h.lead1); set('lead2', h.lead2);
+    set('promise', h.promise, lines); set('story', h.story, paras); set('foot', h.footer, paras);
+    set('ask', h.ask, function (e, t) { e.textContent = t + ' →'; });
+    if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
+    renderSchedule();
+  }
+  function ready() { document.documentElement.classList.add('ready'); }
+
+  if (/[?&]preview\b/.test(location.search)) {
+    // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin || !e.data || !e.data.m13home) return;
+      contacts = e.data.contacts || {}; monthGen = e.data.monthGen || monthGen; applyHome(e.data.m13home); ready();
+    });
+    if (window.parent !== window) window.parent.postMessage({ m13homeReady: true }, location.origin);
+  }
   fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    if (/[?&]preview\b/.test(location.search)) return;
     var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
-    if (m) document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = 'Расписание ' + GEN[+m[2] - 1]; });
+    if (m) monthGen = GEN[+m[2] - 1];
     contacts = (s && s.contacts) || {};
-  }).catch(function () {});
+    applyHome(s && s.home);
+  }).catch(function () {}).then(function () { if (!/[?&]preview\b/.test(location.search)) { renderSchedule(); ready(); } });
 
   // «Задать вопрос»: ссылки на Telegram и VK — те же, что у кнопок «Написать» в витрине
   function handle(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
