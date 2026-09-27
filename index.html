@@ -93,7 +93,20 @@
     .btn{width:100%;max-width:340px;justify-content:center}
     footer .inner{align-items:flex-start;text-align:left}
   }
-  .manifest .btn{max-width:340px}
+  .end{display:flex;flex-direction:column;align-items:center;gap:22px}
+  .mark{width:52px;height:52px;opacity:.9}
+  button.link{background:none;border:0;border-bottom:1px solid rgba(236,211,163,.4);border-radius:0;cursor:pointer;font:400 16px/1.2 var(--sans);letter-spacing:.04em;color:var(--gold);padding:0 0 4px}
+  button.link:hover{border-bottom-color:var(--gold)}
+  button:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+  .modal{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,4,2,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .modal[hidden]{display:none}
+  .modal-box{width:min(380px,100%);background:#17120c;border:1px solid rgba(236,211,163,.22);border-radius:20px;padding:26px 24px 22px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .modal-box h2{margin:0 0 6px;font:500 26px/1.2 var(--serif);color:var(--gold)}
+  .modal-hint{margin:0 0 18px;color:var(--mute);font-size:18px}
+  .channels{display:flex;flex-direction:column;gap:10px}
+  .channels a{display:block;padding:13px 16px;border-radius:999px;border:1px solid rgba(236,211,163,.55);color:var(--cream);text-decoration:none;font:500 15px/1.2 var(--sans);letter-spacing:.05em}
+  .channels a:hover{background:rgba(236,211,163,.1);border-color:var(--gold)}
+  .modal-close{margin-top:14px;background:none;border:0;color:var(--mute);font:400 14px var(--sans);cursor:pointer;padding:8px}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .btn,.btn span[aria-hidden]{transition:none} }
 </style>
@@ -108,16 +121,26 @@
     <div class="actions">
       <!-- Надпись на кнопке сама берётся из витрины: «Расписание октября», «Расписание ноября»… -->
       <a class="btn" id="schedule" href="/vitrina/"><span class="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
-      <!-- Telegram: вписать адрес, когда будет известен -->
-      <a class="link" id="tg" href="#" target="_blank" rel="noopener" hidden>Telegram</a>
     </div>
   </div>
   <a class="more" href="#manifest" aria-label="Читать дальше">↓</a>
 </main>
 <section class="manifest" id="manifest" aria-label="О 13 MIRRORS">
   <p class="story">Помнишь калейдоскоп? С каждым поворотом в нём рождается новый узор, но сам он ничего не создаёт&nbsp;— лишь меняет угол зрения. Переступая этот порог, ты не найдёшь готовых ответов&nbsp;— здесь всегда есть вопрос. Здесь открываются твои миры и продолжается Путь к&nbsp;Себе.</p>
-  <a class="btn" href="/vitrina/"><span class="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
+  <div class="end">
+    <img class="mark" src="assets/dandelion-gold.png" width="768" height="768" alt="">
+    <button type="button" class="link" id="ask">Задать вопрос →</button>
+  </div>
 </section>
+<!-- Окошко «Задать вопрос»: способы связи берутся из панели витрины (Настройки → Контакты по умолчанию) -->
+<div class="modal" id="ask-modal" role="dialog" aria-modal="true" aria-labelledby="ask-title" hidden>
+  <div class="modal-box">
+    <h2 id="ask-title">Задать вопрос</h2>
+    <p class="modal-hint" id="ask-hint">Где вам удобнее написать?</p>
+    <div class="channels" id="ask-channels"></div>
+    <button type="button" class="modal-close" id="ask-close">Закрыть</button>
+  </div>
+</div>
 <footer>
   <div class="inner">
     <p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
@@ -128,10 +151,34 @@
 // Какой месяц сейчас открывается по адресу /vitrina/ — из настроек витрины.
 (function () {
   var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var contacts = {};
   fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
     var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
     if (m) document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = 'Расписание ' + GEN[+m[2] - 1]; });
+    contacts = (s && s.contacts) || {};
   }).catch(function () {});
+
+  // «Задать вопрос»: ссылки на Telegram и VK — те же, что у кнопок «Написать» в витрине
+  function handle(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
+  var CH = [
+    ['telegram', 'Telegram', function (v) { var h = handle(v, /^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i); return h && 'https://t.me/' + encodeURIComponent(h); }],
+    ['vk', 'VK', function (v) { var h = handle(v, /^https?:\/\/(m\.)?(vk\.com|vk\.me)\//i); return h && 'https://vk.me/' + encodeURIComponent(h); }]
+  ];
+  var modal = document.getElementById('ask-modal'), opener = document.getElementById('ask');
+  function openAsk() {
+    var box = document.getElementById('ask-channels'); box.innerHTML = '';
+    CH.forEach(function (c) {
+      var url = c[2](contacts[c[0]]); if (!url) return;
+      var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = c[1]; box.appendChild(a);
+    });
+    document.getElementById('ask-hint').textContent = box.children.length ? 'Где вам удобнее написать?' : 'Контакты скоро появятся здесь.';
+    modal.hidden = false; document.getElementById('ask-close').focus();
+  }
+  function closeAsk() { modal.hidden = true; opener.focus(); }
+  opener.addEventListener('click', openAsk);
+  document.getElementById('ask-close').addEventListener('click', closeAsk);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeAsk(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeAsk(); });
 })();
 </script>
 </body>
