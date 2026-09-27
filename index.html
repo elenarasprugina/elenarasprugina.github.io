@@ -2,19 +2,117 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>13 MIRRORS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>13 MIRRORS · Калейдоскоп твоих миров</title>
+<meta name="description" content="Авторские психологические маршруты 13 MIRRORS. Created with you. For you.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="13 MIRRORS">
+<meta property="og:url" content="https://13mirrors.ru/">
+<meta property="og:title" content="13 MIRRORS · Калейдоскоп твоих миров">
+<meta property="og:description" content="Авторские психологические маршруты. Created with you. For you.">
+<meta property="og:image" content="https://13mirrors.ru/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="vk:image" content="https://13mirrors.ru/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0a07">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" as="image" href="assets/door-wide.webp" media="(min-aspect-ratio: 4/5)">
+<link rel="preload" as="image" href="assets/door-tall.webp" media="(max-aspect-ratio: 4/5)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
 <style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;
-  background:#f2f2f2;color:#202020;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:center}
-  h1{margin:0;font-size:clamp(32px,8vw,64px);letter-spacing:-.02em}
-  p{margin:10px 0 0;color:#6f6f6f;font-size:16px}
+  :root{
+    --night:#0d0a07; --gold:#ecd3a3; --gold-deep:#d9b57a; --cream:#efe4d2; --mute:#b8a88f;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif; --sans:'Jost',-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--night);color:var(--cream);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+
+  /* Картинка с дверью: на широком экране — на весь экран, текст слева на тёмном;
+     на телефоне — вертикальная дверь сверху, мягко уходит в темноту, текст ниже на тёмном фоне */
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;background:var(--night);overflow:hidden}
+  .bg{position:absolute;inset:0;background:url(assets/door-wide.webp) 62% 50%/cover no-repeat}
+  .bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(9,7,4,.86) 0%,rgba(9,7,4,.55) 38%,rgba(9,7,4,.08) 66%,rgba(9,7,4,0) 80%),
+               linear-gradient(0deg,rgba(9,7,4,.6) 0%,rgba(9,7,4,0) 32%)}
+  @media (max-aspect-ratio:4/5){
+    .bg{bottom:auto;height:60svh;background-image:url(assets/door-tall.webp);background-position:58% 22%}
+    .bg::after{background:linear-gradient(180deg,rgba(9,7,4,0) 0%,rgba(9,7,4,0) 52%,rgba(9,7,4,.75) 80%,var(--night) 100%)}
+    .hero{padding-top:44svh}
+  }
+
+  .inner{position:relative;width:100%;max-width:1320px;margin:0 auto;
+    padding:40px clamp(20px,6vw,88px) calc(clamp(40px,9vh,96px) + env(safe-area-inset-bottom,0px));
+    display:flex;flex-direction:column;align-items:flex-start;gap:clamp(18px,2.6vh,26px)}
+  .logo{display:block;width:clamp(250px,38vw,540px);height:auto}
+  h1{margin:0}
+  .lead{margin:0;display:flex;flex-direction:column;gap:2px}
+  .lead b{font-weight:500;font-size:clamp(20px,2.2vw,26px);letter-spacing:.01em;color:var(--cream)}
+  .lead i{font-style:italic;font-size:clamp(18px,1.9vw,23px);color:var(--gold)}
+  .about{margin:0;max-width:29em;font-size:clamp(17px,1.55vw,20px);line-height:1.5;color:var(--mute)}
+
+  .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:4px}
+  .btn{display:inline-flex;align-items:center;gap:12px;padding:15px 26px;border-radius:999px;text-decoration:none;
+    background:var(--gold);color:#1c150c;font:500 15px/1.2 var(--sans);letter-spacing:.06em;
+    box-shadow:0 0 0 1px rgba(236,211,163,.35),0 10px 34px rgba(217,181,122,.28);transition:transform .18s ease,box-shadow .18s ease,background .18s}
+  .btn:hover{transform:translateY(-1px);background:#f3dfb6;box-shadow:0 0 0 1px rgba(236,211,163,.5),0 14px 40px rgba(217,181,122,.38)}
+  .btn span[aria-hidden]{font-size:18px;line-height:1;transition:transform .18s}
+  .btn:hover span[aria-hidden]{transform:translateX(3px)}
+  .link{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
+  .link:hover{border-bottom-color:var(--gold)}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+
+  footer{position:relative;background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
+  footer .inner{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));gap:4px}
+  footer p{margin:0;max-width:62em}
+
+  @media (max-width:600px){
+    /* на телефоне кнопка — сразу под фразой, чтобы её было видно без прокрутки; абзац — ниже */
+    .actions{order:3}.about{order:4;font-size:16.5px}.inner{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))}
+    .logo{width:min(84vw,360px)}
+    .inner{align-items:center;text-align:center}
+    .lead{align-items:center}
+    .actions{justify-content:center;flex-direction:column;gap:16px;width:100%}
+    .btn{width:100%;max-width:340px;justify-content:center}
+    footer .inner{align-items:flex-start;text-align:left}
+  }
+  @media (prefers-reduced-motion:reduce){ .btn,.btn span[aria-hidden]{transition:none} }
 </style>
 </head>
 <body>
-  <div>
-    <h1>13 MIRRORS</h1>
-    <p>Калейдоскоп твоих миров</p>
+<main class="hero">
+  <div class="bg" aria-hidden="true"></div>
+  <div class="inner">
+    <h1><img class="logo" src="assets/logo-gold.png" width="2454" height="545" alt="13 MIRRORS — Калейдоскоп твоих миров"></h1>
+    <p class="lead"><b>Авторские психологические маршруты.</b><i>Created with you. For you.</i></p>
+    <p class="about">13 MIRRORS — пространство внимания к себе. Каждые 13 дней начинается новый маршрут: день за днём мы смотрим на жизнь через одну грань и замечаем, что в ней уже звучит. Можно просто наблюдать, можно пройти путь вместе с группой или погрузиться глубже.</p>
+    <div class="actions">
+      <!-- Надпись на кнопке сама берётся из витрины: «Расписание октября», «Расписание ноября»… -->
+      <a class="btn" id="schedule" href="/vitrina/"><span id="schedule-text">Расписание месяца</span><span aria-hidden="true">→</span></a>
+      <!-- Telegram: вписать адрес, когда будет известен -->
+      <a class="link" id="tg" href="#" target="_blank" rel="noopener" hidden>Telegram</a>
+    </div>
   </div>
+</main>
+<footer>
+  <div class="inner">
+    <p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+    <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p>
+  </div>
+</footer>
+<script>
+// Какой месяц сейчас открывается по адресу /vitrina/ — из настроек витрины.
+(function () {
+  var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
+    if (m) document.getElementById('schedule-text').textContent = 'Расписание ' + GEN[+m[2] - 1];
+  }).catch(function () {});
+})();
+</script>
 </body>
 </html>
