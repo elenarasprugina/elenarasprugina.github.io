@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Гримуар · 13 MIRRORS</title>
+<meta name="description" content="Гримуар «Калейдоскоп твоих миров» — книга миров людей 13 MIRRORS. Книга пишется.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="13 MIRRORS">
+<meta property="og:url" content="https://13mirrors.ru/grimoire/">
+<meta property="og:title" content="Гримуар · Калейдоскоп твоих миров">
+<meta property="og:description" content="Книга миров людей 13 MIRRORS. Книга пишется.">
+<meta property="og:image" content="https://13mirrors.ru/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="vk:image" content="https://13mirrors.ru/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0a07">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
+<style>
+  /* Страница-заглушка Гримуара. Тексты и картинка — из панели витрины (раздел «Гримуар»),
+     цвет и шрифт — те же, что у главной (раздел «Главная страница»). */
+  :root{
+    --night:#0d0a07; --gold:#ecd3a3; --cream:#efe4d2; --mute:#b8a88f;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif; --sans:'Jost',-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:var(--night);color:var(--cream);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+
+  .top{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) 0}
+  .back{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
+  .back:hover{border-bottom-color:var(--gold)}
+
+  .page{position:relative;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px);display:flex;align-items:center;
+    background:radial-gradient(ellipse 55% 50% at 30% 48%,rgba(217,181,122,.12),rgba(217,181,122,0) 70%),var(--night)}
+  .inner{width:100%;max-width:1180px;margin:0 auto;padding:clamp(28px,6vh,72px) clamp(20px,5vw,64px) clamp(40px,8vh,90px);
+    display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:center}
+
+  /* ---- Книга: нарисованная (по умолчанию) или картинка из панели ---- */
+  .art{display:flex;justify-content:center}
+  .book{position:relative;width:clamp(200px,26vw,320px);aspect-ratio:3/4;margin-right:14px;filter:drop-shadow(0 30px 50px rgba(0,0,0,.55))}
+  /* золотой обрез — справа и снизу, за обложкой */
+  .book::before{content:"";position:absolute;top:8px;bottom:-7px;left:10px;right:-12px;border-radius:3px 8px 8px 3px;
+    background:repeating-linear-gradient(90deg,#e9cf9c 0 1px,#b8955f 1px 2px),#d6b77f;
+    box-shadow:inset 0 -6px 0 0 #a8834d}
+  .cover{position:absolute;inset:0;border-radius:4px 10px 10px 4px;overflow:hidden;
+    background:radial-gradient(ellipse 70% 55% at 55% 40%,#2a1e12,#150f09 75%),#150f09;
+    box-shadow:inset 14px 0 18px -10px rgba(0,0,0,.8),inset 0 0 0 1px rgba(236,211,163,.18)}
+  .cover::before{content:"";position:absolute;inset:7%;border:1px solid rgba(236,211,163,.55);border-radius:3px;
+    box-shadow:0 0 0 5px rgba(0,0,0,0),inset 0 0 0 4px rgba(236,211,163,0),inset 0 0 0 5px rgba(236,211,163,.25)}
+  .cover::after{content:"";position:absolute;left:0;top:0;bottom:0;width:7%;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0))}
+  .seal{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:34%;aspect-ratio:1;background:var(--gold);opacity:.92;
+    -webkit-mask:url(/assets/dandelion-gold.png) center/contain no-repeat;mask:url(/assets/dandelion-gold.png) center/contain no-repeat}
+  .cover-word{position:absolute;left:0;right:0;bottom:16%;text-align:center;color:var(--gold);font:500 clamp(11px,1vw,13px)/1.5 var(--serif);letter-spacing:.32em;text-transform:uppercase;opacity:.85}
+  .pic{display:block;max-width:100%;max-height:min(70vh,560px);border-radius:10px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .picwrap{position:relative;display:inline-block;overflow:hidden;border-radius:10px}
+
+  /* След Хранителя — блик, который время от времени пробегает по книге */
+  .glint{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none}
+  .glint::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-60%;width:40%;transform:skewX(-18deg);
+    background:linear-gradient(90deg,rgba(255,240,205,0),rgba(255,240,205,.22) 45%,rgba(255,248,230,.38) 50%,rgba(255,240,205,.22) 55%,rgba(255,240,205,0));
+    animation:glint 9s ease-in-out 1.6s infinite}
+  @keyframes glint{0%{left:-60%}22%{left:130%}100%{left:130%}}
+
+  /* ---- Текст ---- */
+  .text{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(14px,2.2vh,22px)}
+  .eyebrow{margin:0;color:var(--gold);font:500 13px/1.3 var(--sans);letter-spacing:.32em;text-transform:uppercase;opacity:.85}
+  h1{margin:0;font-weight:500;font-size:clamp(36px,4.6vw,60px);line-height:1.08;color:var(--cream);text-wrap:balance}
+  .lead{margin:0;font-style:italic;font-size:clamp(22px,2.3vw,28px);line-height:1.35;color:var(--gold);padding-left:14px;border-left:1px solid rgba(236,211,163,.45)}
+  .story{max-width:31em;display:flex;flex-direction:column;gap:.8em;font-size:clamp(18px,1.6vw,21px);line-height:1.55;color:var(--mute)}
+  .story p{margin:0;text-wrap:pretty}
+  .note{margin:6px 0 0;font-style:italic;font-size:clamp(19px,1.7vw,22px);color:var(--cream);opacity:.9}
+  .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:8px}
+  .btn{display:inline-flex;align-items:center;gap:12px;padding:15px 26px;border-radius:999px;text-decoration:none;
+    background:var(--gold);color:var(--btn-ink,#1c150c);font:500 15px/1.2 var(--sans);letter-spacing:.06em;
+    box-shadow:0 0 0 1px rgba(236,211,163,.35),0 10px 34px rgba(217,181,122,.28);transition:transform .18s ease,box-shadow .18s ease}
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .btn span[aria-hidden]{font-size:18px;line-height:1}
+  .link{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
+  .link:hover{border-bottom-color:var(--gold)}
+
+  /* Пока подгружаются тексты из панели — плавно проявляем, чтобы не мигали старые */
+  html.js .t{opacity:0;transition:opacity .5s ease}
+  html.js.ready .t{opacity:1}
+
+  footer{background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
+  footer .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px}
+  footer p{margin:0;max-width:62em}
+
+  @media (max-width:760px){
+    .page{align-items:flex-start;background:radial-gradient(ellipse 90% 40% at 50% 22%,rgba(217,181,122,.12),rgba(217,181,122,0) 70%),var(--night)}
+    .inner{grid-template-columns:1fr;gap:34px;text-align:center}
+    .book{width:min(56vw,230px)}
+    .pic{max-height:52vh}
+    .text{align-items:center}
+    .lead{border-left:0;padding-left:0}
+    .actions{flex-direction:column;gap:18px;width:100%}
+    .btn{width:100%;max-width:340px;justify-content:center}
+  }
+  @media (prefers-reduced-motion:reduce){ .glint::after{animation:none;display:none} .btn{transition:none} }
+</style>
+</head>
+<body>
+<script>document.documentElement.className += ' js'; setTimeout(function () { document.documentElement.classList.add('ready'); }, 1500);</script>
+<div class="top"><a class="back t" id="home" href="/">← 13 MIRRORS</a></div>
+<main class="page">
+  <div class="inner">
+    <div class="art" id="art" aria-hidden="true">
+      <div class="book"><div class="cover"><span class="seal"></span><span class="cover-word">13 MIRRORS</span><span class="glint"></span></div></div>
+    </div>
+    <div class="text">
+      <p class="eyebrow t" id="eyebrow">Гримуар</p>
+      <h1 class="t" id="title">Калейдоскоп твоих миров</h1>
+      <p class="lead t" id="lead">Книга пишется.</p>
+      <div class="story t" id="story">
+        <p>Здесь появится книга, в которой живут миры людей. Каждый, кто прошёл свой путь в 13&nbsp;MIRRORS, сможет оставить в ней свой мир&nbsp;— историю, стихи, рисунки.</p>
+        <p>Мир Тринадцати Зеркал один&nbsp;— большой и живой. Но без человека он отражает пустоту. Поэтому каждый приносит своё, и складывается узор.</p>
+      </div>
+      <p class="note t" id="note">Здесь появится первый мир.</p>
+      <div class="actions">
+        <a class="btn" href="/vitrina/"><span class="schedule-text t">Расписание месяца</span><span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+    <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
+</footer>
+<script>
+// Тексты и картинка — из настроек витрины (settings.grimoire), цвет, шрифт и пометка внизу — как у главной (settings.home).
+(function () {
+  var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var FONTS = {
+    'Cormorant Garamond': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Lora': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Playfair Display': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
+    'Philosopher': 'ital,wght@0,400;0,700;1,400;1,700'
+  };
+  var scheduleWord = 'Расписание', monthGen = '', ART = document.getElementById('art').innerHTML;
+  // «13 MIRRORS» не разрывается, тире не начинает строку
+  function nb(t) { return String(t).replace(/13 MIRRORS/g, '13\u00a0MIRRORS').replace(/ —/g, '\u00a0—'); }
+  function lines(el, text) {
+    el.textContent = '';
+    nb(text).split('\n').forEach(function (ln, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(ln)); });
+  }
+  function paras(el, text) {
+    el.textContent = '';
+    String(text).split(/\n\s*\n/).forEach(function (par) { if (!par.trim()) return; var p = document.createElement('p'); lines(p, par.trim()); el.appendChild(p); });
+  }
+  function media(src) { return /^(https?:|data:|\/)/.test(src) ? src : '/vitrina/' + src; }
+  function ink(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); if (!m) return '#1c150c';
+    var n = parseInt(m[1], 16); return (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) > 150 ? '#1c150c' : '#fff';
+  }
+  // Пустое поле — остаётся то, что написано в этой странице. Если в поле только пробел — строка прячется.
+  function set(id, v, fn) {
+    var el = document.getElementById(id); if (!el || v == null || v === '') return;
+    var t = String(v).trim();
+    el.hidden = !t;
+    if (t) (fn || function (e, x) { e.textContent = x; })(el, t);
+  }
+  function apply(g, h) {
+    g = g || {}; h = h || {};
+    var root = document.documentElement.style;
+    if (/^#[0-9a-f]{6}$/i.test(h.accent || '')) { root.setProperty('--gold', h.accent); root.setProperty('--btn-ink', ink(h.accent)); }
+    else { root.removeProperty('--gold'); root.removeProperty('--btn-ink'); }
+    if (h.font && FONTS[h.font]) {
+      var id = 'font-' + h.font.replace(/\W/g, '');
+      if (!document.getElementById(id)) {
+        var l = document.createElement('link'); l.rel = 'stylesheet'; l.id = id;
+        l.href = 'https://fonts.googleapis.com/css2?family=' + h.font.replace(/ /g, '+') + ':' + FONTS[h.font] + '&display=swap';
+        document.head.appendChild(l);
+      }
+      root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
+    } else root.removeProperty('--serif');
+    var art = document.getElementById('art');
+    if (g.image) {
+      art.innerHTML = '';
+      var w = document.createElement('span'); w.className = 'picwrap';
+      var img = document.createElement('img'); img.className = 'pic'; img.alt = ''; img.src = media(g.image);
+      var gl = document.createElement('span'); gl.className = 'glint';
+      w.appendChild(img); w.appendChild(gl); art.appendChild(w);
+    } else if (!art.querySelector('.book')) art.innerHTML = ART;
+    set('eyebrow', g.eyebrow); set('title', g.title, lines); set('lead', g.lead, lines);
+    set('story', g.text, paras); set('note', g.note, lines); set('foot', h.footer, paras);
+    if (g.title && String(g.title).trim()) document.title = String(g.title).trim().replace(/\s+/g, ' ') + ' · 13 MIRRORS';
+    if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
+    document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
+  }
+  function ready() { document.documentElement.classList.add('ready'); }
+  var preview = /[?&]preview\b/.test(location.search);
+  if (preview) {
+    // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin || !e.data || !e.data.m13grimoire) return;
+      monthGen = e.data.monthGen || monthGen; apply(e.data.m13grimoire, e.data.home); ready();
+    });
+    if (window.parent !== window) window.parent.postMessage({ m13grimoireReady: true }, location.origin);
+    return;
+  }
+  fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
+    if (m) monthGen = GEN[+m[2] - 1];
+    apply(s && s.grimoire, s && s.home);
+  }).catch(function () {}).then(ready);
+})();
+</script>
+</body>
+</html>
