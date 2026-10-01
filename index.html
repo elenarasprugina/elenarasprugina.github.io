@@ -101,6 +101,7 @@
     footer .inner{align-items:flex-start;text-align:left}
   }
   .end{display:flex;flex-direction:column;align-items:center;gap:22px}
+  .grim{font-size:16px;padding-bottom:4px}
   .mark{display:block;width:52px;height:52px;opacity:.9;background:var(--gold);-webkit-mask:url(assets/dandelion-gold.png) center/contain no-repeat;mask:url(assets/dandelion-gold.png) center/contain no-repeat}
   button.link{background:none;border:0;border-bottom:1px solid rgba(236,211,163,.4);border-radius:0;cursor:pointer;font:400 16px/1.2 var(--sans);letter-spacing:.04em;color:var(--gold);padding:0 0 4px}
   button.link:hover{border-bottom-color:var(--gold)}
@@ -139,6 +140,8 @@
     <p>Переступая этот порог, ты не найдёшь готовых ответов, но здесь всегда есть вопрос. Здесь открываются твои миры и продолжается Путь к&nbsp;Себе.</p>
   </div>  <div class="end">
     <span class="mark" aria-hidden="true"></span>
+    <!-- Ссылка на Гримуар: видна, только если в панели (раздел «Гримуар») включено «Ссылка на главной» -->
+    <a class="link grim" id="grim" href="/grimoire/" hidden>Гримуар · книга миров →</a>
     <button type="button" class="link t" id="ask">Задать вопрос →</button>
   </div>
 </section>
@@ -209,13 +212,19 @@
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
     renderSchedule();
   }
+  // Ссылка на Гримуар (settings.grimoire.onHome, надпись — settings.grimoire.homeLink)
+  function applyGrim(g) {
+    var a = document.getElementById('grim'); g = g || {};
+    a.hidden = !g.onHome;
+    a.textContent = (g.homeLink && String(g.homeLink).trim() ? String(g.homeLink).trim() : 'Гримуар · книга миров') + ' →';
+  }
   function ready() { document.documentElement.classList.add('ready'); }
 
   if (/[?&]preview\b/.test(location.search)) {
     // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
     window.addEventListener('message', function (e) {
       if (e.origin !== location.origin || !e.data || !e.data.m13home) return;
-      contacts = e.data.contacts || {}; monthGen = e.data.monthGen || monthGen; applyHome(e.data.m13home); ready();
+      contacts = e.data.contacts || {}; monthGen = e.data.monthGen || monthGen; applyHome(e.data.m13home); applyGrim(e.data.grimoire); ready();
     });
     if (window.parent !== window) window.parent.postMessage({ m13homeReady: true }, location.origin);
   }
@@ -224,7 +233,7 @@
     var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
     if (m) monthGen = GEN[+m[2] - 1];
     contacts = (s && s.contacts) || {};
-    applyHome(s && s.home);
+    applyHome(s && s.home); applyGrim(s && s.grimoire);
   }).catch(function () {}).then(function () { if (!/[?&]preview\b/.test(location.search)) { renderSchedule(); ready(); } });
 
   // «Задать вопрос»: ссылки на Telegram и VK — те же, что у кнопок «Написать» в витрине
