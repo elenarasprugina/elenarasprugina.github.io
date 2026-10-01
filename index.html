@@ -65,6 +65,10 @@
   .btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 0 0 1px rgba(236,211,163,.5),0 14px 40px rgba(217,181,122,.38)}
   .btn span[aria-hidden]{font-size:18px;line-height:1;transition:transform .18s}
   .btn:hover span[aria-hidden]{transform:translateX(3px)}
+  /* Вторая кнопка (Гримуар): такая же, но без заливки — золотой контур на тёмном стекле */
+  .btn--line{background:rgba(13,10,7,.35);color:var(--gold);box-shadow:0 0 0 1px rgba(236,211,163,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .btn--line:hover{background:rgba(236,211,163,.12);box-shadow:0 0 0 1px var(--gold),0 10px 34px rgba(217,181,122,.18)}
+  .btn[hidden]{display:none}
   .link{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
   .link:hover{border-bottom-color:var(--gold)}
   a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
@@ -130,6 +134,8 @@
     <div class="actions">
       <!-- Надпись на кнопке сама берётся из витрины: «Расписание октября», «Расписание ноября»… -->
       <a class="btn" id="schedule" href="/vitrina/"><span class="schedule-text t">Расписание месяца</span><span aria-hidden="true">→</span></a>
+      <!-- Кнопка Гримуара: видна, если в панели (раздел «Гримуар») страница открыта и включено «Кнопка рядом с расписанием» -->
+      <a class="btn btn--line" id="grim-btn" href="/grimoire/" hidden><span id="grim-btn-text">Открыть Гримуар</span><span aria-hidden="true">→</span></a>
     </div>
   </div>
   <a class="more" href="#manifest" aria-label="Читать дальше">↓</a>
@@ -212,11 +218,14 @@
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
     renderSchedule();
   }
-  // Ссылка на Гримуар (settings.grimoire.onHome, надпись — settings.grimoire.homeLink)
+  // Гримуар на главной — только когда его страница открыта (settings.grimoire.open):
+  // кнопка рядом с расписанием (homeBtn, по умолчанию да; надпись — homeBtnText) и ссылка внизу (onHome, надпись — homeLink)
   function applyGrim(g) {
-    var a = document.getElementById('grim'); g = g || {};
-    a.hidden = !(g.onHome && g.open);   // ссылка — только когда страница Гримуара открыта
+    var a = document.getElementById('grim'), b = document.getElementById('grim-btn'); g = g || {};
+    a.hidden = !(g.onHome && g.open);
     a.textContent = (g.homeLink && String(g.homeLink).trim() ? String(g.homeLink).trim() : 'Гримуар · книга миров') + ' →';
+    b.hidden = !(g.open && g.homeBtn !== false);
+    document.getElementById('grim-btn-text').textContent = g.homeBtnText && String(g.homeBtnText).trim() ? String(g.homeBtnText).trim() : 'Открыть Гримуар';
   }
   function ready() { document.documentElement.classList.add('ready'); }
 
