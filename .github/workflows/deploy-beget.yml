@@ -1,0 +1,111 @@
+# Пересылка главной страницы на хостинг Beget.
+# После каждого изменения в main файлы этого репозитория копируются в корень сайта 13mirrors.ru.
+# Папку vitrina/ (её пересылает репозиторий vitrina) эта пересылка НИКОГДА не трогает:
+# в корне сайта ничего не удаляется — каждая папка репозитория (assets, grimoire…)
+# обновляется только внутри себя, а отдельные файлы (index.html, favicon.svg) просто перезаписываются.
+# Вход — отдельный аккаунт Beget evraspyn_site, у которого доступ только к папке сайта.
+# Нужно в Settings → Secrets and variables → Actions:
+#   Secrets   → BEGET_PASSWORD — пароль этого аккаунта (в журнал не выводится);
+#   Variables → BEGET_HOSTKEY  — отпечаток сервера Beget (первый запуск покажет его и остановится).
+# В папке сайта на Beget должен лежать пустой файл-метка .13mirrors-deploy-root.
+name: Пересылка на Beget
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # кнопка «Run workflow» — запустить вручную
+
+concurrency:
+  group: beget-home
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  BEGET_HOST: evraspyn.beget.tech
+  BEGET_USER: evraspyn_site
+  MARKER: .13mirrors-deploy-root
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Подготовка
+        env:
+          LFTP_PASSWORD: ${{ secrets.BEGET_PASSWORD }}
+        run: |
+          if [ -z "$LFTP_PASSWORD" ]; then
+            echo "::error::Нет пароля: добавьте BEGET_PASSWORD в Settings → Secrets and variables → Actions → Secrets"
+            exit 1
+          fi
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp > /dev/null
+
+      - name: Отпечаток сервера
+        env:
+          BEGET_HOSTKEY: ${{ vars.BEGET_HOSTKEY }}
+        run: |
+          # Пересылка разговаривает только с сервером, чей отпечаток закреплён в BEGET_HOSTKEY.
+          # Если отпечаток ещё не закреплён — показываем его и останавливаемся, ничего не копируя.
+          ssh-keyscan -T 20 -t ed25519 "$BEGET_HOST" 2>/dev/null > "$RUNNER_TEMP/scanned" || true
+          echo "Отпечаток сервера $BEGET_HOST сейчас:"
+          ssh-keygen -lf "$RUNNER_TEMP/scanned" || true
+          if [ -z "$BEGET_HOSTKEY" ]; then
+            echo "Строка для BEGET_HOSTKEY (скопировать целиком):"
+            cat "$RUNNER_TEMP/scanned"
+            echo "::error::Отпечаток сервера не закреплён. Скопируйте строку выше в Settings → Secrets and variables → Actions → Variables → BEGET_HOSTKEY и запустите снова. Ничего не скопировано."
+            exit 1
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$BEGET_HOSTKEY" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Проверка, что мы в папке сайта
+        env:
+          LFTP_PASSWORD: ${{ secrets.BEGET_PASSWORD }}
+        run: |
+          # 1) В папке должен лежать файл-метка .13mirrors-deploy-root — значит, это папка сайта.
+          # 2) Не должно быть видно папок уровнем выше (public_html, 13mirrors.ru, evraspyn.beget.tech).
+          # Если что-то не так — останавливаемся, ничего не копируя и не удаляя.
+          lftp -c "set cmd:fail-exit yes; set net:max-retries 3; set net:timeout 30;
+                   set sftp:connect-program 'ssh -a -x -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts';
+                   open --env-password -u $BEGET_USER sftp://$BEGET_HOST;
+                   pwd; cls -1a" > "$RUNNER_TEMP/list.txt"
+          cat "$RUNNER_TEMP/list.txt"
+          if ! grep -qxF "$MARKER" "$RUNNER_TEMP/list.txt"; then
+            echo "::error::В папке на Beget нет файла-метки $MARKER. Пересылка остановлена, ничего не изменено."
+            exit 1
+          fi
+          if grep -qE '^(public_html|13mirrors\.ru|evraspyn\.beget\.tech)/?$' "$RUNNER_TEMP/list.txt"; then
+            echo "::error::Аккаунт открывает не папку сайта, а уровень выше. Пересылка остановлена, ничего не изменено."
+            exit 1
+          fi
+
+      - name: Пересылка главной (без vitrina/)
+        env:
+          LFTP_PASSWORD: ${{ secrets.BEGET_PASSWORD }}
+        run: |
+          # Список команд собирается из того, что лежит в репозитории (скрытые .git и .github
+          # в него не попадают; других скрытых файлов в репозитории нет).
+          # vitrina, README.md, CNAME, CLAUDE.md пропускаются.
+          # Для папок — mirror --delete ВНУТРИ этой папки, для файлов — put (перезапись).
+          # Команды «удалить что-то в корне сайта» здесь нет вообще.
+          cmds=""
+          for item in *; do
+            case "$item" in
+              vitrina|README.md|CNAME|CLAUDE.md) echo "пропускаю: $item"; continue ;;
+            esac
+            if [ -d "$item" ]; then
+              cmds="$cmds mirror --reverse --delete --parallel=4 --no-perms --verbose=1 \"$item\" \"$item\";"
+            else
+              cmds="$cmds put \"$item\";"
+            fi
+          done
+          echo "Команды: $cmds"
+          lftp -c "set cmd:fail-exit yes; set net:max-retries 3; set net:timeout 30;
+                   set sftp:connect-program 'ssh -a -x -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts';
+                   open --env-password -u $BEGET_USER sftp://$BEGET_HOST;
+                   $cmds"
