@@ -1,0 +1,13 @@
+# Маршрут «Синяя Рука» на Beget.
+# Входы по адресу без «?mode=»: /13mirrors-blue-hand/nablyudenie, /puteshestvie, /pogruzhenie
+# (и observation, journey, immersion) открывают ту же страницу — формат она определяет сама.
+RewriteEngine On
+RewriteBase /13mirrors-blue-hand/
+# со слешем на конце — без слеша (иначе не найдутся стили и картинки)
+RewriteRule ^(nablyudenie|observation|puteshestvie|journey|pogruzhenie|immersion)/$ $1 [R=301,L,NC]
+RewriteRule ^(nablyudenie|observation|puteshestvie|journey|pogruzhenie|immersion)$ index.html [L,NC]
+
+# Страница — всегда свежая (браузер сверяется с сервером).
+<FilesMatch "\.html$">
+  Header set Cache-Control "no-cache"
+</FilesMatch>
