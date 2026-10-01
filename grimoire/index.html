@@ -88,6 +88,9 @@
   /* Пока подгружаются тексты из панели — плавно проявляем, чтобы не мигали старые */
   html.js .t{opacity:0;transition:opacity .5s ease}
   html.js.ready .t{opacity:1}
+  /* Пока не ясно, открыта ли страница (переключатель в панели), её не видно; закрыта — уводим на главную */
+  html.js body{opacity:0;transition:opacity .4s ease}
+  html.js.shown body{opacity:1}
 
   footer{background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
   footer .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px}
@@ -107,7 +110,7 @@
 </style>
 </head>
 <body>
-<script>document.documentElement.className += ' js'; setTimeout(function () { document.documentElement.classList.add('ready'); }, 1500);</script>
+<script>document.documentElement.className += ' js'; setTimeout(function () { if (!window.M13_LEAVING) document.documentElement.classList.add('ready', 'shown'); }, 2500);</script>
 <div class="top"><a class="back t" id="home" href="/">← 13 MIRRORS</a></div>
 <main class="page">
   <div class="inner">
@@ -194,7 +197,7 @@
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
     document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
   }
-  function ready() { document.documentElement.classList.add('ready'); }
+  function ready() { document.documentElement.classList.add('ready', 'shown'); }
   var preview = /[?&]preview\b/.test(location.search);
   if (preview) {
     // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
@@ -206,10 +209,12 @@
     return;
   }
   fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    // Страница закрыта (в панели: Гримуар → «Страница открыта» выключено) — на главную
+    if (s && !(s.grimoire && s.grimoire.open)) { window.M13_LEAVING = true; location.replace('/'); return; }
     var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
     if (m) monthGen = GEN[+m[2] - 1];
     apply(s && s.grimoire, s && s.home);
-  }).catch(function () {}).then(ready);
+  }).catch(function () {}).then(function () { if (!window.M13_LEAVING) ready(); });
 })();
 </script>
 </body>

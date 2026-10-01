@@ -215,7 +215,7 @@
   // Ссылка на Гримуар (settings.grimoire.onHome, надпись — settings.grimoire.homeLink)
   function applyGrim(g) {
     var a = document.getElementById('grim'); g = g || {};
-    a.hidden = !g.onHome;
+    a.hidden = !(g.onHome && g.open);   // ссылка — только когда страница Гримуара открыта
     a.textContent = (g.homeLink && String(g.homeLink).trim() ? String(g.homeLink).trim() : 'Гримуар · книга миров') + ' →';
   }
   function ready() { document.documentElement.classList.add('ready'); }
