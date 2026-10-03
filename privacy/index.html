@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Конфиденциальность · 13 MIRRORS</title>
+<meta name="description" content="Как 13 MIRRORS обращается с вашими данными: сайт не собирает персональные данные и не ведёт статистику посещений.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="13 MIRRORS">
+<meta property="og:url" content="https://13mirrors.ru/privacy/">
+<meta property="og:title" content="Конфиденциальность · 13 MIRRORS">
+<meta property="og:description" content="Сайт не собирает персональные данные и не ведёт статистику посещений.">
+<meta property="og:image" content="https://13mirrors.ru/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0a07">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<!-- Шрифты лежат на самом сайте (копии с Google Fonts в витрине: /vitrina/assets/fonts/) — к Google браузер не обращается -->
+<link rel="stylesheet" href="/vitrina/assets/fonts/cormorant-garamond.css">
+<link rel="stylesheet" href="/vitrina/assets/fonts/jost.css">
+<style>
+  /* Страница «Конфиденциальность». Заголовок и текст — из панели витрины (раздел «Главная страница» → «Страница „Конфиденциальность“»),
+     цвет, шрифт и пометка внизу — те же, что у главной. Пустое поле в панели — остаётся текст, написанный здесь. */
+  :root{
+    --night:#0d0a07; --gold:#ecd3a3; --cream:#efe4d2; --mute:#b8a88f;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif; --sans:'Jost',-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:var(--night);color:var(--cream);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+
+  .top{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) 0}
+  .back{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
+  .back:hover{border-bottom-color:var(--gold)}
+
+  .page{min-height:calc(100vh - 140px);min-height:calc(100svh - 140px);
+    background:radial-gradient(ellipse 60% 40% at 50% 18%,rgba(217,181,122,.10),rgba(217,181,122,0) 70%),var(--night)}
+  .inner{max-width:44em;margin:0 auto;padding:clamp(40px,8vh,96px) clamp(20px,5vw,64px) clamp(48px,9vh,110px);
+    display:flex;flex-direction:column;gap:clamp(22px,3.4vh,34px)}
+  .mark{display:block;width:40px;height:40px;opacity:.9;background:var(--gold);-webkit-mask:url(/assets/dandelion-gold.png) center/contain no-repeat;mask:url(/assets/dandelion-gold.png) center/contain no-repeat}
+  h1{margin:0;font-weight:500;font-size:clamp(36px,4.6vw,56px);line-height:1.1;color:var(--gold);text-wrap:balance}
+  .story{display:flex;flex-direction:column;gap:.95em;font-size:clamp(19px,1.7vw,22px);line-height:1.6;color:var(--cream)}
+  .story p{margin:0;text-wrap:pretty}
+  .story p:first-child{font-style:italic;color:var(--gold)}
+
+  /* Пока подгружаются тексты из панели — плавно проявляем, чтобы не мигали старые */
+  html.js .t{opacity:0;transition:opacity .5s ease}
+  html.js.ready .t{opacity:1}
+
+  footer{background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
+  footer .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px}
+  footer p{margin:0;max-width:62em}
+</style>
+</head>
+<body>
+<script>document.documentElement.className += ' js'; setTimeout(function () { document.documentElement.classList.add('ready'); }, 1500);</script>
+<div class="top"><a class="back" href="/">← 13 MIRRORS</a></div>
+<main class="page">
+  <div class="inner">
+    <span class="mark" aria-hidden="true"></span>
+    <h1 class="t" id="title">Конфиденциальность</h1>
+    <div class="story t" id="story">
+      <p>13&nbsp;MIRRORS&nbsp;— пространство для внутренней работы. Всё, что вы здесь проживаете, остаётся вашим.</p>
+      <p>Сайт не собирает персональные данные. Здесь нет регистрации, анкет и форм&nbsp;— вам не нужно сообщать о себе ни имя, ни телефон, ни почту.</p>
+      <p>На сайте нет счётчиков посещений, рекламы и систем статистики, сайт не использует cookie. Шрифты и картинки загружаются с самого сайта&nbsp;— без обращения к сторонним сервисам.</p>
+      <p>То, что вы отмечаете и выбираете на маршрутах, хранится только в браузере вашего устройства. Это не передаётся на сервер и не видно никому, кроме вас. Если очистить данные сайта в браузере, это сотрётся.</p>
+      <p>Как и любой сайт в интернете, сервер, на котором размещён 13&nbsp;MIRRORS, ведёт технические журналы обращений (адрес устройства в сети, время, открытая страница). Они нужны для работы сервера, и мы не используем их, чтобы узнавать, кто заходил.</p>
+      <p>Когда вы пишете нам в Telegram или VK, разговор идёт уже там, по правилам этих сервисов.</p>
+      <p>Если остались вопросы&nbsp;— напишите нам: ссылка «Задать вопрос» есть на главной странице.</p>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+    <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
+</footer>
+<script>
+// Заголовок и текст — из настроек витрины (settings.home.privacyTitle / privacyText), цвет, шрифт и пометка внизу — как у главной (settings.home).
+(function () {
+  var FONTS = { 'Cormorant Garamond': 'cormorant-garamond', 'Lora': 'lora', 'Playfair Display': 'playfair-display', 'Philosopher': 'philosopher' }; // файлы — /vitrina/assets/fonts/<имя>.css
+  // «13 MIRRORS» не разрывается, тире не начинает строку
+  function nb(t) { return String(t).replace(/13 MIRRORS/g, '13 MIRRORS').replace(/ —/g, ' —'); }
+  function lines(el, text) {
+    el.textContent = '';
+    nb(text).split('\n').forEach(function (ln, i) { if (i) el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(ln)); });
+  }
+  function paras(el, text) {
+    el.textContent = '';
+    String(text).split(/\n\s*\n/).forEach(function (par) { if (!par.trim()) return; var p = document.createElement('p'); lines(p, par.trim()); el.appendChild(p); });
+  }
+  function set(id, v, fn) { var el = document.getElementById(id); if (el && v != null && String(v).trim()) (fn || function (e, t) { e.textContent = t; })(el, String(v).trim()); }
+  function apply(h) {
+    h = h || {};
+    var root = document.documentElement.style;
+    if (/^#[0-9a-f]{6}$/i.test(h.accent || '')) root.setProperty('--gold', h.accent); else root.removeProperty('--gold');
+    if (h.font && FONTS[h.font]) {
+      var id = 'font-' + h.font.replace(/\W/g, '');
+      if (!document.getElementById(id)) {
+        var l = document.createElement('link'); l.rel = 'stylesheet'; l.id = id;
+        l.href = '/vitrina/assets/fonts/' + FONTS[h.font] + '.css';
+        document.head.appendChild(l);
+      }
+      root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
+    } else root.removeProperty('--serif');
+    set('title', h.privacyTitle, lines); set('story', h.privacyText, paras); set('foot', h.footer, paras);
+    if (h.privacyTitle && String(h.privacyTitle).trim()) document.title = String(h.privacyTitle).trim().replace(/\s+/g, ' ') + ' · 13 MIRRORS';
+  }
+  function ready() { document.documentElement.classList.add('ready'); }
+  if (/[?&]preview\b/.test(location.search)) {
+    // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin || !e.data || !e.data.m13privacy) return;
+      apply(e.data.home); ready();
+    });
+    if (window.parent !== window) window.parent.postMessage({ m13privacyReady: true }, location.origin);
+    return;
+  }
+  fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    apply(s && s.home);
+  }).catch(function () {}).then(ready);
+})();
+</script>
+</body>
+</html>

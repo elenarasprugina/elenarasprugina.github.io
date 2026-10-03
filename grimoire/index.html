@@ -18,9 +18,9 @@
 <meta name="theme-color" content="#0d0a07">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
+<!-- Шрифты лежат на самом сайте (копии с Google Fonts в витрине: /vitrina/assets/fonts/) — к Google браузер не обращается -->
+<link rel="stylesheet" href="/vitrina/assets/fonts/cormorant-garamond.css">
+<link rel="stylesheet" href="/vitrina/assets/fonts/jost.css">
 <style>
   /* Страница-заглушка Гримуара. Тексты и картинка — из панели витрины (раздел «Гримуар»),
      цвет и шрифт — те же, что у главной (раздел «Главная страница»). */
@@ -95,6 +95,10 @@
   footer{background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
   footer .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px}
   footer p{margin:0;max-width:62em}
+  #foot{display:flex;flex-direction:column;gap:4px}
+  /* Ссылка на страницу «Конфиденциальность» — под пометкой внизу (надпись — из панели: Главная страница → privacyTitle) */
+  .priv{color:inherit;text-decoration:underline;text-decoration-color:rgba(140,127,108,.55);text-underline-offset:3px}
+  .priv:hover{color:var(--gold);text-decoration-color:currentColor}
 
   @media (max-width:760px){
     .page{align-items:flex-start;background:radial-gradient(ellipse 90% 40% at 50% 22%,rgba(217,181,122,.12),rgba(217,181,122,0) 70%),var(--night)}
@@ -108,8 +112,6 @@
   }
   @media (prefers-reduced-motion:reduce){ .glint::after{animation:none;display:none} .btn{transition:none} }
 </style>
-<!-- Яндекс Метрика: один счётчик на весь сайт 13mirrors.ru, код и настройки — в репозитории vitrina, assets/metrika.js -->
-<script src="/vitrina/assets/metrika.js" async></script>
 </head>
 <body>
 <script>document.documentElement.className += ' js'; setTimeout(function () { if (!window.M13_LEAVING) document.documentElement.classList.add('ready', 'shown'); }, 2500);</script>
@@ -135,19 +137,15 @@
   </div>
 </main>
 <footer>
-  <div class="wrap t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+  <div class="wrap"><div class="t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
     <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
+    <p class="t"><a class="priv" id="priv" href="/privacy/">Конфиденциальность</a></p></div>
 </footer>
 <script>
 // Тексты и картинка — из настроек витрины (settings.grimoire), цвет, шрифт и пометка внизу — как у главной (settings.home).
 (function () {
   var GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-  var FONTS = {
-    'Cormorant Garamond': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
-    'Lora': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
-    'Playfair Display': 'ital,wght@0,400;0,500;0,600;1,400;1,500',
-    'Philosopher': 'ital,wght@0,400;0,700;1,400;1,700'
-  };
+  var FONTS = { 'Cormorant Garamond': 'cormorant-garamond', 'Lora': 'lora', 'Playfair Display': 'playfair-display', 'Philosopher': 'philosopher' }; // файлы — /vitrina/assets/fonts/<имя>.css
   var scheduleWord = 'Расписание', monthGen = '', ART = document.getElementById('art').innerHTML;
   // «13 MIRRORS» не разрывается, тире не начинает строку
   function nb(t) { return String(t).replace(/13 MIRRORS/g, '13\u00a0MIRRORS').replace(/ —/g, '\u00a0—'); }
@@ -180,7 +178,7 @@
       var id = 'font-' + h.font.replace(/\W/g, '');
       if (!document.getElementById(id)) {
         var l = document.createElement('link'); l.rel = 'stylesheet'; l.id = id;
-        l.href = 'https://fonts.googleapis.com/css2?family=' + h.font.replace(/ /g, '+') + ':' + FONTS[h.font] + '&display=swap';
+        l.href = '/vitrina/assets/fonts/' + FONTS[h.font] + '.css';
         document.head.appendChild(l);
       }
       root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
@@ -194,7 +192,7 @@
       w.appendChild(img); w.appendChild(gl); art.appendChild(w);
     } else if (!art.querySelector('.book')) art.innerHTML = ART;
     set('eyebrow', g.eyebrow); set('title', g.title, lines); set('lead', g.lead, lines);
-    set('story', g.text, paras); set('note', g.note, lines); set('foot', h.footer, paras);
+    set('story', g.text, paras); set('note', g.note, lines); set('foot', h.footer, paras); set('priv', h.privacyTitle);
     if (g.title && String(g.title).trim()) document.title = String(g.title).trim().replace(/\s+/g, ' ') + ' · 13 MIRRORS';
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
     document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
