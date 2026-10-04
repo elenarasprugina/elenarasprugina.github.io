@@ -53,6 +53,10 @@
   footer{background:var(--night);color:#8c7f6c;font:400 12.5px/1.55 var(--sans);letter-spacing:.01em}
   footer .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(20px,5vw,64px) calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px}
   footer p{margin:0;max-width:62em}
+  #foot{display:flex;flex-direction:column;gap:4px}
+  /* Строка внизу, под пометкой: имя, статус, ИНН (панель: Главная страница → home.legal), Telegram и VK (Настройки → Контакты), «Конфиденциальность» (надпись — privacyTitle) */
+  .priv{color:inherit;text-decoration:underline;text-decoration-color:rgba(140,127,108,.55);text-underline-offset:3px}
+  .priv:hover{color:var(--gold);text-decoration-color:currentColor}
 </style>
 </head>
 <body>
@@ -74,8 +78,9 @@
   </div>
 </main>
 <footer>
-  <div class="wrap t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
+  <div class="wrap"><div class="t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
     <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
+    <p class="t" id="legal" data-def="Распругина Елена, самозанятая, ИНН 272498468707" data-self="1">Распругина Елена, самозанятая, ИНН 272498468707</p></div>
 </footer>
 <script>
 // Заголовок и текст — из настроек витрины (settings.home.privacyTitle / privacyText), цвет, шрифт и пометка внизу — как у главной (settings.home).
@@ -92,7 +97,26 @@
     String(text).split(/\n\s*\n/).forEach(function (par) { if (!par.trim()) return; var p = document.createElement('p'); lines(p, par.trim()); el.appendChild(p); });
   }
   function set(id, v, fn) { var el = document.getElementById(id); if (el && v != null && String(v).trim()) (fn || function (e, t) { e.textContent = t; })(el, String(v).trim()); }
-  function apply(h) {
+  // Строка внизу: имя, статус, ИНН (home.legal; пусто — как в странице, один пробел — спрятать), Telegram и VK — из «Контакты по умолчанию»,
+  // ссылка «Конфиденциальность» (надпись — home.privacyTitle; на самой этой странице ссылки нет)
+  function legalLine(h, c) {
+    var box = document.getElementById('legal'); if (!box) return;
+    h = h || {}; c = c || {};
+    var t = h.legal == null || h.legal === '' ? box.getAttribute('data-def') : String(h.legal).trim(), parts = [];
+    if (t) parts.push(document.createTextNode(t));
+    function hd(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
+    [['Telegram', hd(c.telegram, /^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i), 'https://t.me/'], ['VK', hd(c.vk, /^https?:\/\/(m\.)?(vk\.com|vk\.me)\//i), 'https://vk.me/']].forEach(function (x) {
+      if (!x[1]) return;
+      var a = document.createElement('a'); a.className = 'priv'; a.href = x[2] + encodeURIComponent(x[1]); a.target = '_blank'; a.rel = 'noopener'; a.textContent = x[0]; parts.push(a);
+    });
+    if (!box.getAttribute('data-self')) {
+      var p = document.createElement('a'); p.className = 'priv'; p.href = '/privacy/';
+      p.textContent = h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'; parts.push(p);
+    }
+    box.textContent = '';
+    parts.forEach(function (n, i) { if (i) box.appendChild(document.createTextNode(' · ')); box.appendChild(n); });
+  }
+  function apply(h, c) {
     h = h || {};
     var root = document.documentElement.style;
     if (/^#[0-9a-f]{6}$/i.test(h.accent || '')) root.setProperty('--gold', h.accent); else root.removeProperty('--gold');
@@ -105,7 +129,7 @@
       }
       root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
     } else root.removeProperty('--serif');
-    set('title', h.privacyTitle, lines); set('story', h.privacyText, paras); set('foot', h.footer, paras);
+    set('title', h.privacyTitle, lines); set('story', h.privacyText, paras); set('foot', h.footer, paras); legalLine(h, c);
     if (h.privacyTitle && String(h.privacyTitle).trim()) document.title = String(h.privacyTitle).trim().replace(/\s+/g, ' ') + ' · 13 MIRRORS';
   }
   function ready() { document.documentElement.classList.add('ready'); }
@@ -113,13 +137,13 @@
     // Предпросмотр из панели: черновик приходит сообщением, на сайт ничего не пишется
     window.addEventListener('message', function (e) {
       if (e.origin !== location.origin || !e.data || !e.data.m13privacy) return;
-      apply(e.data.home); ready();
+      apply(e.data.home, e.data.contacts); ready();
     });
     if (window.parent !== window) window.parent.postMessage({ m13privacyReady: true }, location.origin);
     return;
   }
   fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
-    apply(s && s.home);
+    apply(s && s.home, s && s.contacts);
   }).catch(function () {}).then(ready);
 })();
 </script>
