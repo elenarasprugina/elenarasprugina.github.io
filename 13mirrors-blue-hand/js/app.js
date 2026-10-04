@@ -211,7 +211,8 @@
       this.renderWaitingScreen();
 
       var introSeen = lsGet(LS.INTRO_SEEN) === "1";
-      if (!introSeen) {
+      // После окончания маршрута — сразу финальный ролик, без вступления.
+      if (!introSeen && this.state.phase !== "finished") {
         showScreen("intro");
       } else {
         this.renderCurrentState();
@@ -1006,31 +1007,12 @@
       }
     },
 
-    /* ---------------- Полностью завершённый маршрут (после 4 октября) ---------------- */
+    /* ---------------- Полностью завершённый маршрут (после 4 октября) ----------------
+       Её решение 04.10: финальный ролик играет сам при каждом заходе на страницу
+       (тот же сценарий, что в День 13: ролик → надписи и логотип поверх последнего
+       кадра). Если ролик не запустился — стоп-кадр с надписями или кнопка запуска. */
     showCompletedFinale: function () {
-      var root = screens.finale;
-      root.innerHTML = "";
-      var stage = el("div", "finale-stage");
-      var finalImg = el("img", null);
-      finalImg.src = "assets/day13_final.jpg";
-      finalImg.alt = "";
-      stage.appendChild(finalImg);
-
-      var overlay = el("div", "finale-text-overlay");
-      overlay.appendChild(el("div", "line line-1 is-visible", CFG.finale.lines[0]));
-      overlay.appendChild(el("div", "line line-2 is-visible", CFG.finale.lines[1]));
-      stage.appendChild(overlay);
-
-      // Настоящий логотип 13 MIRRORS, перекрашенный в золото (раздел 26 ТЗ)
-      var logo = el("div", "finale-logo is-visible");
-      var logoImg = el("img", null);
-      logoImg.src = "assets/logo_gold.png";
-      logoImg.alt = "13 MIRRORS · Калейдоскоп твоих миров";
-      logo.appendChild(logoImg);
-      stage.appendChild(logo);
-
-      root.appendChild(stage);
-      showScreen("finale");
+      this.startDay13Finale();
     }
   };
 
