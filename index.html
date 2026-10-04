@@ -91,7 +91,7 @@
   footer .inner{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));gap:4px}
   footer p{margin:0;max-width:62em}
   #foot{display:flex;flex-direction:column;gap:4px}
-  /* Ссылка на страницу «Конфиденциальность» — под пометкой внизу (надпись — из панели: Главная страница → privacyTitle) */
+  /* Строка внизу, под пометкой: имя, статус, ИНН (панель: Главная страница → home.legal), Telegram и VK (Настройки → Контакты), «Конфиденциальность» (надпись — privacyTitle) */
   .priv{color:inherit;text-decoration:underline;text-decoration-color:rgba(140,127,108,.55);text-underline-offset:3px}
   .priv:hover{color:var(--gold);text-decoration-color:currentColor}
 
@@ -167,7 +167,7 @@
   <div class="inner">
     <div class="t" id="foot"><p>© 13 MIRRORS. Все материалы являются частью авторской разработки 13 MIRRORS.</p>
     <p>Использование и воспроизведение — только с указанием авторства и по согласованию с автором.</p></div>
-    <p class="t"><a class="priv" id="priv" href="/privacy/">Конфиденциальность</a></p>
+    <p class="t" id="legal" data-def="Распругина Елена, самозанятая, ИНН 272498468707">Распругина Елена, самозанятая, ИНН 272498468707 · <a class="priv" href="/privacy/">Конфиденциальность</a></p>
   </div>
 </footer>
 <script>
@@ -193,6 +193,25 @@
     var n = parseInt(m[1], 16); return (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) > 150 ? '#1c150c' : '#fff';
   }
   function set(id, v, fn) { var el = document.getElementById(id); if (el && v != null && String(v).trim()) (fn || function (e, t) { e.textContent = t; })(el, String(v).trim()); }
+  // Строка внизу: имя, статус, ИНН (home.legal; пусто — как в странице, один пробел — спрятать), Telegram и VK — из «Контакты по умолчанию»,
+  // ссылка «Конфиденциальность» (надпись — home.privacyTitle; на самой этой странице ссылки нет)
+  function legalLine(h, c) {
+    var box = document.getElementById('legal'); if (!box) return;
+    h = h || {}; c = c || {};
+    var t = h.legal == null || h.legal === '' ? box.getAttribute('data-def') : String(h.legal).trim(), parts = [];
+    if (t) parts.push(document.createTextNode(t));
+    function hd(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
+    [['Telegram', hd(c.telegram, /^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i), 'https://t.me/'], ['VK', hd(c.vk, /^https?:\/\/(m\.)?(vk\.com|vk\.me)\//i), 'https://vk.me/']].forEach(function (x) {
+      if (!x[1]) return;
+      var a = document.createElement('a'); a.className = 'priv'; a.href = x[2] + encodeURIComponent(x[1]); a.target = '_blank'; a.rel = 'noopener'; a.textContent = x[0]; parts.push(a);
+    });
+    if (!box.getAttribute('data-self')) {
+      var p = document.createElement('a'); p.className = 'priv'; p.href = '/privacy/';
+      p.textContent = h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'; parts.push(p);
+    }
+    box.textContent = '';
+    parts.forEach(function (n, i) { if (i) box.appendChild(document.createTextNode(' · ')); box.appendChild(n); });
+  }
   function renderSchedule() {
     document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
   }
@@ -212,7 +231,7 @@
       root.setProperty('--serif', "'" + h.font + "',Georgia,'Times New Roman',serif");
     } else root.removeProperty('--serif');
     set('lead1', h.lead1); set('lead2', h.lead2);
-    set('promise', h.promise, lines); set('story', h.story, paras); set('foot', h.footer, paras); set('priv', h.privacyTitle);
+    set('promise', h.promise, lines); set('story', h.story, paras); set('foot', h.footer, paras); legalLine(h, contacts);
     set('ask', h.ask, function (e, t) { e.textContent = t + ' →'; });
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
     renderSchedule();
