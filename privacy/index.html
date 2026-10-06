@@ -103,7 +103,7 @@
     var box = document.getElementById('legal'); if (!box) return;
     h = h || {}; c = c || {};
     var t = h.legal == null || h.legal === '' ? box.getAttribute('data-def') : String(h.legal).trim(), parts = [];
-    if (t) parts.push(document.createTextNode(t));
+    if (t) { var s = document.createElement('span'); lines(s, t); parts.push(s); }  // Enter в поле — новая строка
     function hd(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
     [['Telegram', hd(c.telegram, /^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i), 'https://t.me/'], ['VK', hd(c.vk, /^https?:\/\/(m\.)?(vk\.com|vk\.me)\//i), 'https://vk.me/']].forEach(function (x) {
       if (!x[1]) return;
@@ -111,7 +111,7 @@
     });
     if (!box.getAttribute('data-self')) {
       var p = document.createElement('a'); p.className = 'priv'; p.href = '/privacy/';
-      p.textContent = h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'; parts.push(p);
+      lines(p, h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'); parts.push(p);
     }
     box.textContent = '';
     parts.forEach(function (n, i) { if (i) box.appendChild(document.createTextNode(' · ')); box.appendChild(n); });
