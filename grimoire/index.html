@@ -82,6 +82,7 @@
     box-shadow:0 0 0 1px rgba(236,211,163,.35),0 10px 34px rgba(217,181,122,.28);transition:transform .18s ease,box-shadow .18s ease}
   .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
   .btn span[aria-hidden]{font-size:18px;line-height:1}
+  .btn .t{text-align:center}
   .link{color:var(--gold);font:400 15px/1.2 var(--sans);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid rgba(236,211,163,.4);padding-bottom:3px}
   .link:hover{border-bottom-color:var(--gold)}
 
@@ -175,7 +176,7 @@
     var box = document.getElementById('legal'); if (!box) return;
     h = h || {}; c = c || {};
     var t = h.legal == null || h.legal === '' ? box.getAttribute('data-def') : String(h.legal).trim(), parts = [];
-    if (t) parts.push(document.createTextNode(t));
+    if (t) { var s = document.createElement('span'); lines(s, t); parts.push(s); }  // Enter в поле — новая строка
     function hd(v, re) { return String(v || '').trim().replace(re, '').replace(/^@/, '').replace(/[/?#].*$/, ''); }
     [['Telegram', hd(c.telegram, /^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i), 'https://t.me/'], ['VK', hd(c.vk, /^https?:\/\/(m\.)?(vk\.com|vk\.me)\//i), 'https://vk.me/']].forEach(function (x) {
       if (!x[1]) return;
@@ -183,7 +184,7 @@
     });
     if (!box.getAttribute('data-self')) {
       var p = document.createElement('a'); p.className = 'priv'; p.href = '/privacy/';
-      p.textContent = h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'; parts.push(p);
+      lines(p, h.privacyTitle && String(h.privacyTitle).trim() ? String(h.privacyTitle).trim() : 'Конфиденциальность'); parts.push(p);
     }
     box.textContent = '';
     parts.forEach(function (n, i) { if (i) box.appendChild(document.createTextNode(' · ')); box.appendChild(n); });
@@ -210,11 +211,11 @@
       var gl = document.createElement('span'); gl.className = 'glint';
       w.appendChild(img); w.appendChild(gl); art.appendChild(w);
     } else if (!art.querySelector('.book')) art.innerHTML = ART;
-    set('eyebrow', g.eyebrow); set('title', g.title, lines); set('lead', g.lead, lines);
+    set('eyebrow', g.eyebrow, lines); set('title', g.title, lines); set('lead', g.lead, lines);
     set('story', g.text, paras); set('note', g.note, lines); set('foot', h.footer, paras); legalLine(h, c);
     if (g.title && String(g.title).trim()) document.title = String(g.title).trim().replace(/\s+/g, ' ') + ' · 13 MIRRORS';
     if (h.scheduleWord && String(h.scheduleWord).trim()) scheduleWord = String(h.scheduleWord).trim();
-    document.querySelectorAll('.schedule-text').forEach(function (el) { el.textContent = scheduleWord + (monthGen ? ' ' + monthGen : ' месяца'); });
+    document.querySelectorAll('.schedule-text').forEach(function (el) { lines(el, scheduleWord + (monthGen ? ' ' + monthGen : ' месяца')); });
   }
   function ready() { document.documentElement.classList.add('ready', 'shown'); }
   var preview = /[?&]preview\b/.test(location.search);
