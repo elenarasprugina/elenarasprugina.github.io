@@ -256,9 +256,23 @@
     });
     if (window.parent !== window) window.parent.postMessage({ m13homeReady: true }, location.origin);
   }
-  fetch('/vitrina/data/settings.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+  // Месяц — по календарю, как у витрины (M13.monthPick): тот, что сейчас идёт по Москве (с months.startDay-го числа), если опубликован,
+  // иначе последний опубликованный до него. Выключено «по календарю» (months.auto: false) — выбранный в панели (currentShowcase).
+  function monthPick(s, ids) {
+    var mo = (s && s.months) || {};
+    if (mo.auto === false) return s.currentShowcase || '';
+    var n = new Date(Date.now() + 3 * 3600e3), y = n.getUTCFullYear(), mm = n.getUTCMonth() + 1;
+    if (n.getUTCDate() < Math.max(1, Math.min(28, Math.round(+mo.startDay || 1)))) { mm--; if (!mm) { mm = 12; y--; } }
+    var now = y + '-' + (mm < 10 ? '0' : '') + mm, list = ids.filter(function (id) { return /^\d{4}-\d{2}$/.test(id); }).sort(), out = '';
+    list.forEach(function (id) { if (id <= now) out = id; });
+    return out || list[0] || s.currentShowcase || '';
+  }
+  function getJSON(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  Promise.all([getJSON('/vitrina/data/settings.json'), getJSON('/vitrina/data/showcases/index.json')]).then(function (res) {
+    var s = res[0], ix = res[1];
     if (/[?&]preview\b/.test(location.search)) return;
-    var m = s && /^(\d{4})-(\d{2})$/.exec(s.currentShowcase || '');
+    var ids = ((ix && ix.showcases) || []).filter(function (x) { return x && x.status !== 'draft'; }).map(function (x) { return x.id; });
+    var m = s && /^(\d{4})-(\d{2})$/.exec(monthPick(s, ids));
     if (m) monthGen = GEN[+m[2] - 1];
     contacts = (s && s.contacts) || {};
     applyHome(s && s.home); applyGrim(s && s.grimoire);
