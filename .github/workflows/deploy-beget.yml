@@ -10,9 +10,9 @@
 # В папке сайта на Beget должен лежать пустой файл-метка .13mirrors-deploy-root.
 name: Пересылка на Beget
 
+# 12.11.2026: Beget взломан (02.11), сайт переехал на REG.RU — автозапуск выключен,
+# теперь работает deploy-regru.yml. Эта пересылка осталась только кнопкой, на всякий случай.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:        # кнопка «Run workflow» — запустить вручную
 
 concurrency:
